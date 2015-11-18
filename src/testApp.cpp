@@ -8,14 +8,15 @@ void testApp::setup() {
     
     usePS3 = false;
     debugMode = false;
-    rotateScreen = false;
+    rotateScreen = true;
     
     if(usePS3) {
 	    setupPS3Eye();
     } else {
 		cam.initGrabber(WIDTH, HEIGHT);
     }
-	tracker.setup();
+    tracker.setup();
+    classifier.classify(tracker);
     
     numFaces = 0;
     
@@ -28,6 +29,9 @@ void testApp::setup() {
     allFaces.end();
     
     a = new unsigned long[WIDTH * HEIGHT * 3];
+    
+    
+    classifier.load("expressions");
 }
 
 
@@ -61,6 +65,8 @@ void testApp::setupPS3Eye() {
     vidGrabber.setAutoWhiteBalance(true);
     
     tracker.setRescale(1);
+    
+    
 }
 
 void testApp::update() {
@@ -73,7 +79,8 @@ void testApp::update() {
             videoTexture.loadData(vidGrabber.getPixelsRef());
             ofPixels pix = vidGrabber.getPixelsRef();
             pix.setImageType(OF_IMAGE_GRAYSCALE);
-        	tracker.update(toCv(pix));
+            tracker.update(toCv(pix));
+            classifier.classify(tracker);
         }
         
     } else {
@@ -82,6 +89,7 @@ void testApp::update() {
         
         if(cam.isFrameNew()) {
             tracker.update(toCv(cam));
+            classifier.classify(tracker);
         }
     }
 }
@@ -165,6 +173,14 @@ void testApp::draw() {
     } else {
         allFaces.draw(0, 0, ofGetWidth(), ofGetHeight());
     }
+    
+    if(classifier.getProbability(5) > 0.99 && !justDidExpression) {
+        toggleDebugMode();
+        justDidExpression = true;
+    }
+    if(classifier.getProbability(5) < 0.9 && justDidExpression) {
+        justDidExpression = false;
+    }
 }
 
 void testApp::addCurrentFaceToAllFaces() {
@@ -188,13 +204,11 @@ void testApp::addCurrentFaceToAllFaces() {
         unsigned char* tp = temp.getPixels();
         
         for( int i = 0; i < temp.getWidth() * temp.getHeight() * 3; i++) {
-            //int c = (allPixels[i] * numFaces + currentPixels[i]) / (numFaces+1);
             a[i] += tp[i];
         }
     }
     
     for( int i = 0; i < currentPixels.size(); i++) {
-        //int c = (allPixels[i] * numFaces + currentPixels[i]) / (numFaces+1);
         allPixels[i] = a[i] / numFaces;
     }
     
@@ -212,17 +226,36 @@ void testApp::addCurrentFaceToAllFaces() {
     ofPopMatrix();
 }
 
+void testApp::toggleDebugMode() {
+    debugMode = ! debugMode;
+}
+
 void testApp::keyPressed(int key) {
     if(key == 'x') {
         tracker.reset();
+        classifier.reset();
     }
     if(key == ' ') {
-        debugMode = ! debugMode;
+        toggleDebugMode();
     }
     if(key == 'f') {
         ofToggleFullscreen();
     }
     if(key == 'r') {
         rotateScreen = !rotateScreen;
+    }
+    
+    
+    if(key == 'e') {
+        classifier.addExpression();
+    }
+    if(key == 'a') {
+        classifier.addSample(tracker);
+    }
+    if(key == 's') {
+        classifier.save("expressions");
+    }
+    if(key == 'l') {
+        classifier.load("expressions");
     }
 }

@@ -14,6 +14,8 @@ public:
 	void keyPressed(int key);
     
     bool debugMode;
+    void toggleDebugMode();
+    
     bool rotateScreen;
     
     
@@ -36,6 +38,7 @@ public:
 	ofVideoGrabber cam;
     
 	ofxFaceTracker tracker;
+    ExpressionClassifier classifier;
     
     ofPoint leftEyePos;
     ofPoint rightEyePos;
@@ -56,5 +59,5 @@ public:
     
     unsigned long long timestampLastFaceSaved;
     
-    
+    bool justDidExpression;
 };
