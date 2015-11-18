@@ -14,6 +14,8 @@
 		2023EF517ED2D8B397511D4B /* Helpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B9076967F8C54A04362C04AA /* Helpers.cpp */; };
 		24735CD2E138DC5C1F0A1085 /* ofxFaceTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 185BB9B07B8DB74BD2D3211F /* ofxFaceTracker.cpp */; };
 		250A95BA26587BE85DB0A353 /* ofxCvColorImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE9C7160245B19131DAE6128 /* ofxCvColorImage.cpp */; };
+		26C45D211BFC81BB00F16299 /* ps3eye.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26C45D1C1BFC81BB00F16299 /* ps3eye.cpp */; };
+		26C45D221BFC81BB00F16299 /* ofxPS3EyeGrabber.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26C45D1F1BFC81BB00F16299 /* ofxPS3EyeGrabber.cpp */; };
 		2745C0B718210A7D00F2D29A /* testApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2745C0B518210A7D00F2D29A /* testApp.cpp */; };
 		45CC483A999BF1065A6B926C /* Distance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9DBD717072C35D324E101669 /* Distance.cpp */; };
 		4F02F4D92C36436C945A6716 /* Patch.cc in Sources */ = {isa = PBXBuildFile; fileRef = 3769B74412282AEFEBDD8C86 /* Patch.cc */; };
@@ -104,6 +106,10 @@
 		185BB9B07B8DB74BD2D3211F /* ofxFaceTracker.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxFaceTracker.cpp; path = ../../../addons/ofxFaceTracker/src/ofxFaceTracker.cpp; sourceTree = SOURCE_ROOT; };
 		19660B42DF06415007708495 /* IO.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = IO.h; path = ../../../addons/ofxFaceTracker/libs/FaceTracker/include/FaceTracker/IO.h; sourceTree = SOURCE_ROOT; };
 		1E95EFD35ED9C5D97F2F015E /* timer.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = timer.h; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/flann/timer.h; sourceTree = SOURCE_ROOT; };
+		26C45D1C1BFC81BB00F16299 /* ps3eye.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ps3eye.cpp; sourceTree = "<group>"; };
+		26C45D1D1BFC81BB00F16299 /* ps3eye.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ps3eye.h; sourceTree = "<group>"; };
+		26C45D1F1BFC81BB00F16299 /* ofxPS3EyeGrabber.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxPS3EyeGrabber.cpp; sourceTree = "<group>"; };
+		26C45D201BFC81BB00F16299 /* ofxPS3EyeGrabber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxPS3EyeGrabber.h; sourceTree = "<group>"; };
 		2745C0B518210A7D00F2D29A /* testApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testApp.cpp; sourceTree = "<group>"; };
 		2745C0B618210A7D00F2D29A /* testApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testApp.h; sourceTree = "<group>"; };
 		2E411F99E3AB7154484B4F96 /* kmeans_index.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = kmeans_index.h; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/flann/kmeans_index.h; sourceTree = SOURCE_ROOT; };
@@ -392,6 +398,51 @@
 			name = flann;
 			sourceTree = "<group>";
 		};
+		26C45D191BFC81BB00F16299 /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				26C45D1A1BFC81BB00F16299 /* ps3eye */,
+			);
+			name = libs;
+			path = ../../ofxPS3EyeGrabber/libs;
+			sourceTree = "<group>";
+		};
+		26C45D1A1BFC81BB00F16299 /* ps3eye */ = {
+			isa = PBXGroup;
+			children = (
+				26C45D1B1BFC81BB00F16299 /* src */,
+			);
+			path = ps3eye;
+			sourceTree = "<group>";
+		};
+		26C45D1B1BFC81BB00F16299 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				26C45D1C1BFC81BB00F16299 /* ps3eye.cpp */,
+				26C45D1D1BFC81BB00F16299 /* ps3eye.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		26C45D1E1BFC81BB00F16299 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				26C45D1F1BFC81BB00F16299 /* ofxPS3EyeGrabber.cpp */,
+				26C45D201BFC81BB00F16299 /* ofxPS3EyeGrabber.h */,
+			);
+			name = src;
+			path = ../../ofxPS3EyeGrabber/src;
+			sourceTree = "<group>";
+		};
+		26C45D231BFC81BF00F16299 /* ofxPS3EyeGrabber */ = {
+			isa = PBXGroup;
+			children = (
+				26C45D191BFC81BB00F16299 /* libs */,
+				26C45D1E1BFC81BB00F16299 /* src */,
+			);
+			name = ofxPS3EyeGrabber;
+			sourceTree = "<group>";
+		};
 		2B86176FA97BFB2BEE1F2F83 /* ofxFaceTracker */ = {
 			isa = PBXGroup;
 			children = (
@@ -623,6 +674,7 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				26C45D231BFC81BF00F16299 /* ofxPS3EyeGrabber */,
 				A0B90D3B0ADB9C1716816714 /* ofxOpenCv */,
 				6025FAF6414C2CA589764D26 /* ofxCv */,
 				2B86176FA97BFB2BEE1F2F83 /* ofxFaceTracker */,
@@ -936,10 +988,12 @@
 				FB09C6B2A1DA0EA217240CB8 /* ofxCvGrayscaleImage.cpp in Sources */,
 				E212C821D1064B92DD953A42 /* ofxCvHaarFinder.cpp in Sources */,
 				63020F16C7E8DED980111241 /* ofxCvImage.cpp in Sources */,
+				26C45D211BFC81BB00F16299 /* ps3eye.cpp in Sources */,
 				D3301F6A0B43BB293ED97C1D /* ofxCvShortImage.cpp in Sources */,
 				B6840996567E78436F7ECFAB /* ETF.cpp in Sources */,
 				F76B4A79BD8DE4854141CB47 /* fdog.cpp in Sources */,
 				EBCDE831EFAE08274E799C97 /* Calibration.cpp in Sources */,
+				26C45D221BFC81BB00F16299 /* ofxPS3EyeGrabber.cpp in Sources */,
 				6AABAB39E82AF5CFEA23A205 /* ContourFinder.cpp in Sources */,
 				45CC483A999BF1065A6B926C /* Distance.cpp in Sources */,
 				5CC34D433F5806179935B89D /* Flow.cpp in Sources */,
@@ -1038,6 +1092,23 @@
 					../../../addons/ofxFaceTracker/libs/FaceTracker/src,
 					../../../addons/ofxFaceTracker/libs/FaceTracker/src/lib,
 					../../../addons/ofxFaceTracker/src,
+					../../../addons/ofxKinect/libs,
+					../../../addons/ofxKinect/libs/libfreenect,
+					../../../addons/ofxKinect/libs/libfreenect/include,
+					../../../addons/ofxKinect/libs/libfreenect/platform,
+					../../../addons/ofxKinect/libs/libfreenect/src,
+					"../../../addons/ofxKinect/libs/libusb-1.0",
+					"../../../addons/ofxKinect/libs/libusb-1.0/include",
+					"../../../addons/ofxKinect/libs/libusb-1.0/include/libusb-1.0",
+					"../../../addons/ofxKinect/libs/libusb-1.0/lib",
+					"../../../addons/ofxKinect/libs/libusb-1.0/lib/osx",
+					"../../../addons/ofxKinect/libs/libusb-win32",
+					../../../addons/ofxKinect/src,
+					../../../addons/ofxKinect/src/extra,
+					../../../addons/ofxPS3EyeGrabber/libs,
+					../../../addons/ofxPS3EyeGrabber/libs/ps3eye,
+					../../../addons/ofxPS3EyeGrabber/libs/ps3eye/src,
+					../../../addons/ofxPS3EyeGrabber/src,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_CPLUSPLUSFLAGS = (
@@ -1048,6 +1119,7 @@
 				OTHER_LDFLAGS = (
 					"$(OF_CORE_LIBS)",
 					../../../addons/ofxOpenCv/libs/opencv/lib/osx/opencv.a,
+					"../../../addons/ofxKinect/libs/libusb-1.0/lib/osx/usb-1.0.a",
 				);
 				SDKROOT = macosx;
 			};
@@ -1117,6 +1189,23 @@
 					../../../addons/ofxFaceTracker/libs/FaceTracker/src,
 					../../../addons/ofxFaceTracker/libs/FaceTracker/src/lib,
 					../../../addons/ofxFaceTracker/src,
+					../../../addons/ofxKinect/libs,
+					../../../addons/ofxKinect/libs/libfreenect,
+					../../../addons/ofxKinect/libs/libfreenect/include,
+					../../../addons/ofxKinect/libs/libfreenect/platform,
+					../../../addons/ofxKinect/libs/libfreenect/src,
+					"../../../addons/ofxKinect/libs/libusb-1.0",
+					"../../../addons/ofxKinect/libs/libusb-1.0/include",
+					"../../../addons/ofxKinect/libs/libusb-1.0/include/libusb-1.0",
+					"../../../addons/ofxKinect/libs/libusb-1.0/lib",
+					"../../../addons/ofxKinect/libs/libusb-1.0/lib/osx",
+					"../../../addons/ofxKinect/libs/libusb-win32",
+					../../../addons/ofxKinect/src,
+					../../../addons/ofxKinect/src/extra,
+					../../../addons/ofxPS3EyeGrabber/libs,
+					../../../addons/ofxPS3EyeGrabber/libs/ps3eye,
+					../../../addons/ofxPS3EyeGrabber/libs/ps3eye/src,
+					../../../addons/ofxPS3EyeGrabber/src,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_CPLUSPLUSFLAGS = (
@@ -1127,6 +1216,7 @@
 				OTHER_LDFLAGS = (
 					"$(OF_CORE_LIBS)",
 					../../../addons/ofxOpenCv/libs/opencv/lib/osx/opencv.a,
+					"../../../addons/ofxKinect/libs/libusb-1.0/lib/osx/usb-1.0.a",
 				);
 				SDKROOT = macosx;
 			};
