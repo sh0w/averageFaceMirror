@@ -3,9 +3,12 @@
 using namespace ofxCv;
 
 void testApp::setup() {
-    usePS3 = true;
-    WIDTH = 640*2;
-    HEIGHT = 480*2;
+    WIDTH = 1280;
+    HEIGHT = 720;
+    
+    usePS3 = false;
+    debugMode = false;
+    rotateScreen = false;
     
     if(usePS3) {
 	    setupPS3Eye();
@@ -13,8 +16,6 @@ void testApp::setup() {
 		cam.initGrabber(WIDTH, HEIGHT);
     }
 	tracker.setup();
-//    ofSetFrameRate(1);
-
     
     numFaces = 0;
     
@@ -56,8 +57,8 @@ void testApp::setupPS3Eye() {
     vidGrabber.setDesiredFrameRate(camFrameRate);
     vidGrabber.initGrabber(camWidth, camHeight);
     
-    vidGrabber.setAutogain(false);
-    vidGrabber.setAutoWhiteBalance(false);
+    vidGrabber.setAutogain(true);
+    vidGrabber.setAutoWhiteBalance(true);
     
     tracker.setRescale(1);
 }
@@ -86,15 +87,7 @@ void testApp::update() {
 }
 
 void testApp::draw() {
-	ofSetLineWidth(2);
-    
-    if(usePS3) {
-        videoTexture.draw(0,0,ofGetWidth()/2, ofGetHeight()/2);
-    } else {
-	    cam.draw(0,0,ofGetWidth()/2, ofGetHeight()/2);
-    }
-    tracker.draw();
-    
+    ofPushMatrix();
     if(tracker.getFound()) {
         
         currentFace.begin();
@@ -104,10 +97,12 @@ void testApp::draw() {
         nosePos = tracker.getImageFeature(ofxFaceTracker::NOSE_BASE).getCentroid2D();
         mouthPos = tracker.getImageFeature(ofxFaceTracker::INNER_MOUTH).getCentroid2D();
         
-        tracker.getImageFeature(ofxFaceTracker::LEFT_EYE).draw();
-        tracker.getImageFeature(ofxFaceTracker::RIGHT_EYE).draw();
-        tracker.getImageFeature(ofxFaceTracker::NOSE_BASE).draw();
-        tracker.getImageFeature(ofxFaceTracker::INNER_MOUTH).draw();
+        
+        if(rotateScreen) {
+            ofTranslate(ofGetWidth() * 0.8, -ofGetHeight()/9);
+            ofRotate(90);
+            ofScale(0.8,0.8);
+        }
         
         ofTranslate(ofGetWidth()/3, ofGetHeight()/3);
         ofTranslate(-leftEyePos);
@@ -133,39 +128,49 @@ void testApp::draw() {
         }
         ofPopMatrix();
         
-        if(ofGetFrameNum() % 100 == 0) {
+        if(ofGetElapsedTimeMillis() > timestampLastFaceSaved + 1000) {
             ofImage temp;
             temp.grabScreen(0, 0, WIDTH, HEIGHT);
-            temp.saveImage( ofToString(numFaces) + ".jpg");
+            temp.saveImage( ofToString(numFaces % 1000) + ".jpg");
             addCurrentFaceToAllFaces();
         }
         
         currentFace.end();
     }
     
-    currentFace.draw(ofGetWidth()/2,0,ofGetWidth()/2, ofGetHeight()/2);
     
-    
-//    ofScale(1,-1);
-    
-    allFaces.draw(ofGetWidth()/2, ofGetHeight()/2, ofGetWidth()/2, ofGetHeight()/2);
-    
-    
+    if(debugMode) {
         
-    //    ofEllipse(leftEyePos, 10, 10);
-     //   ofEllipse(rightEyePos, 10, 10);
-      //  ofEllipse(mouthPos, 10, 10);
-    
-    
-    
-    
-    ofDrawBitmapString(ofToString((int) ofGetFrameRate()), 10, 20);
-    ofDrawBitmapString(ofToString(numFaces), 10, 35);
-    ofDrawBitmapString(ofToString((int) ofDist(leftEyePos.x, leftEyePos.y, rightEyePos.x,  rightEyePos.y)), 10, 50);
+        ofSetLineWidth(2);
+        
+        currentFace.draw(ofGetWidth()/2,0,ofGetWidth()/2, ofGetHeight()/2);
+        allFaces.draw(ofGetWidth()/2, ofGetHeight()/2, ofGetWidth()/2, ofGetHeight()/2);
+        
+        
+        tracker.getImageFeature(ofxFaceTracker::LEFT_EYE).draw();
+        tracker.getImageFeature(ofxFaceTracker::RIGHT_EYE).draw();
+        tracker.getImageFeature(ofxFaceTracker::NOSE_BASE).draw();
+        tracker.getImageFeature(ofxFaceTracker::INNER_MOUTH).draw();
+        
+        if(usePS3) {
+            videoTexture.draw(0,0,ofGetWidth()/2, ofGetHeight()/2);
+        } else {
+            cam.draw(0,0,ofGetWidth()/2, ofGetHeight()/2);
+        }
+        tracker.draw();
+        
+        ofDrawBitmapString(ofToString((int) ofGetFrameRate()), 10, 20);
+        ofDrawBitmapString(ofToString(numFaces), 10, 35);
+        ofDrawBitmapString(ofToString((int)ofGetElapsedTimeMillis()/1000), 10, 50);
+    } else {
+        allFaces.draw(0, 0, ofGetWidth(), ofGetHeight());
+    }
 }
 
 void testApp::addCurrentFaceToAllFaces() {
     //ofReadPixels(allFaces.getTexture(), myPixels);
+    
+    timestampLastFaceSaved = ofGetElapsedTimeMillis();
     
     numFaces++;
     
@@ -178,7 +183,7 @@ void testApp::addCurrentFaceToAllFaces() {
     
     for (int i = numFaces-1; i < numFaces; i++) {
         ofImage temp;
-        temp.loadImage(ofToString(i) + ".jpg");
+        temp.loadImage(ofToString(i%1000) + ".jpg");
         
         unsigned char* tp = temp.getPixels();
         
@@ -203,10 +208,21 @@ void testApp::addCurrentFaceToAllFaces() {
     
 //    delete [] a;
 //    a = NULL;
+    
+    ofPopMatrix();
 }
 
 void testApp::keyPressed(int key) {
-	if(key == 'r') {
-		tracker.reset();
-	}
+    if(key == 'x') {
+        tracker.reset();
+    }
+    if(key == ' ') {
+        debugMode = ! debugMode;
+    }
+    if(key == 'f') {
+        ofToggleFullscreen();
+    }
+    if(key == 'r') {
+        rotateScreen = !rotateScreen;
+    }
 }

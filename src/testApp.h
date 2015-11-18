@@ -13,6 +13,9 @@ public:
 	void draw();
 	void keyPressed(int key);
     
+    bool debugMode;
+    bool rotateScreen;
+    
     
     // note, this is probably not the best way to do this
     // because ofxPS3EyeGrabber actually extends ofBaseVideoGrabber
@@ -50,6 +53,8 @@ public:
     
     
     unsigned long* a;
+    
+    unsigned long long timestampLastFaceSaved;
     
     
 };
