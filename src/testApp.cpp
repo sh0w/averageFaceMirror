@@ -23,19 +23,18 @@ void testApp::setup() {
     
     numFaces = 0;
     
-    output.allocate(WIDTH, HEIGHT, GL_RGB);
     allFaces.allocate(WIDTH, HEIGHT, GL_RGB);
     currentFace.allocate(WIDTH, HEIGHT, GL_RGB);
+    currentFaceWithMouthAligned.allocate(WIDTH, HEIGHT, GL_RGB);
     
+    /*
     allFaces.begin();
-    ofSetColor(255,255,255);
-    ofRect(20,20,ofGetWidth(), ofGetHeight());
-    allFaces.end();
+    ofSetColor(0);
+    ofRect(0,0,ofGetWidth(), ofGetHeight());
+    allFaces.end();*/
     
     a = new unsigned long[WIDTH * HEIGHT * 3];
-    
-    
-//    classifier.load("expressions");
+    totalEyeMouthRatio = 0;
 }
 
 
@@ -72,14 +71,13 @@ void testApp::setupPS3Eye() {
     vidGrabber.setContrast(50);
     vidGrabber.setRedBalance(120);
     vidGrabber.setBlueBalance(133);
-    
+    vidGrabber.setHue(100);
     
     tracker.setRescale(1);
 }
 
 void testApp::update() {
     
-    vidGrabber.setHue(100);
     if(usePS3) {
         vidGrabber.update();
         
@@ -104,7 +102,7 @@ void testApp::update() {
 }
 
 void testApp::draw() {
-    output.begin();
+    //output.begin();
     
     
     ofPushMatrix();
@@ -135,68 +133,32 @@ void testApp::draw() {
         ofRotate(-asin((rightEyePos.y - leftEyePos.y)/
                        ofDist(leftEyePos.x, leftEyePos.y, rightEyePos.x,  rightEyePos.y)) * 180/PI);
         
-        /*
-        ofLogNotice("eye-dist");
-        ofLogNotice(ofToString(ofDist(leftEyePos.x, leftEyePos.y, rightEyePos.x,  rightEyePos.y)));
-        ofLogNotice("mouth-eye-dist");
-        ofLogNotice(ofToString(ofDist((leftEyePos.x + rightEyePos.x)/2, (leftEyePos.y + rightEyePos.y)/2, mouthPos.x, mouthPos.y)));
         
-        ofLogNotice("righteye x, y");
-        ofLogNotice(ofToString(rightEyePos.x));
-        ofLogNotice(ofToString(rightEyePos.y));
-        ofLogNotice("lefteye x, y");
-        ofLogNotice(ofToString(leftEyePos.x));
-        ofLogNotice(ofToString(leftEyePos.y));
-        
-        ofLogNotice("between left and right");
-        ofLogNotice(ofToString(leftEyePos.x + ));
-        ofLogNotice(ofToString(leftEyePos.y));
-        
-        ofLogNotice("mouth x, y");
-        ofLogNotice(ofToString(mouthPos.x));
-        ofLogNotice(ofToString(mouthPos.y));*/
-        
-        //ofPushMatrix();
+        eyeDist = ofDist(leftEyePos.x, leftEyePos.y, rightEyePos.x,  rightEyePos.y);
+        mouthDist = ofDist((leftEyePos.x + rightEyePos.x)/2, (leftEyePos.y + rightEyePos.y)/2, mouthPos.x, mouthPos.y);
         
         // scale everything down to make left + right eye always at same distance
         ofScale(270 / ofDist(leftEyePos.x, leftEyePos.y, rightEyePos.x,  rightEyePos.y),
                 270 / ofDist(leftEyePos.x, leftEyePos.y, rightEyePos.x,  rightEyePos.y));
         
-        
-        
-        /*float scalefactorForMouth = 136 / ofDist(leftEyePos.x, leftEyePos.y, mouthPos.x,  mouthPos.y);
-        
-        ofLogNotice("scalefactorForMouth:");
-        ofLogNotice(ofToString(scalefactorForMouth));
-        
-        ofScale(1, scalefactorForMouth);
-         */
-        
-        //ofPopMatrix();
-         
-         
-        ofTranslate(-leftEyePos.x, -leftEyePos.y);
-         
-         
-        
-        //ofTranslate(-leftEyePos);
-        
-        // scale everything down to mouth at same position too!
-        //ofLogNotice("i d like to scale y:");
-        //ofLogNotice(ofToString(323 / ofDist((leftEyePos.x + rightEyePos.x)/2, (leftEyePos.y + rightEyePos.y)/2, mouthPos.x, mouthPos.y)));
-        //ofScale(1, 323 / ofDist((leftEyePos.x + rightEyePos.x)/2, (leftEyePos.y + rightEyePos.y)/2, mouthPos.x, mouthPos.y));
-        
-        
-        // scale everything down to mouth at same position too!
-        //ofScale(1, 323 / ofDist((leftEyePos.x + rightEyePos.x)/2, (leftEyePos.y + rightEyePos.y)/2, mouthPos.x, mouthPos.y));
+        ofTranslate(-leftEyePos);
         
         if(usePS3) {
-            videoTexture.draw(0,0);
+            videoTexture.draw(0, 0);
         } else {
             cam.draw(0, 0);
         }
         
         ofPopMatrix();
+        
+        currentFace.end();
+        
+        currentFaceWithMouthAligned.begin();
+        
+        ofTranslate(WIDTH*0.67, HEIGHT/2);
+        
+        ofScale(1.15/(mouthDist/eyeDist),1);
+        currentFace.draw(-1.15*WIDTH*0.565,-HEIGHT/2);
         
         if(ofGetElapsedTimeMillis() > timestampLastFaceSaved + 1000) {
             ofImage temp;
@@ -205,43 +167,43 @@ void testApp::draw() {
             addCurrentFaceToAllFaces();
         }
         
-        currentFace.end();
+        currentFaceWithMouthAligned.end();
     }
     
     
     if(debugMode) {
         
+        ofPushMatrix();
+        ofScale(0.5,0.5);
+        
+        currentFace.draw(0, HEIGHT, WIDTH, HEIGHT);
+        allFaces.draw(WIDTH, HEIGHT, WIDTH, HEIGHT);
+        currentFaceWithMouthAligned.draw(WIDTH, 0, WIDTH, HEIGHT);
+        
+        
+        if(usePS3) {
+            videoTexture.draw(0,0);
+        } else {
+            cam.draw(0,0);
+        }
+        
         ofSetLineWidth(2);
-        
-        currentFace.draw(ofGetWidth()/2,0,ofGetWidth()/2, ofGetHeight()/2);
-        allFaces.draw(ofGetWidth()/2, ofGetHeight()/2, ofGetWidth()/2, ofGetHeight()/2);
-        
-        
         tracker.getImageFeature(ofxFaceTracker::LEFT_EYE).draw();
         tracker.getImageFeature(ofxFaceTracker::RIGHT_EYE).draw();
         tracker.getImageFeature(ofxFaceTracker::NOSE_BASE).draw();
         tracker.getImageFeature(ofxFaceTracker::INNER_MOUTH).draw();
         
-        if(usePS3) {
-            videoTexture.draw(0,0,ofGetWidth()/2, ofGetHeight()/2);
-        } else {
-            cam.draw(0,0,ofGetWidth()/2, ofGetHeight()/2);
-        }
-        //tracker.draw(0,0,ofGetWidth()/2, ofGetHeight()/2);
         
-        /*
-        ofPushStyle();
-        ofSetColor(0,255,0);
-        ofEllipse(tracker.getImageFeature(ofxFaceTracker::INNER_MOUTH).getCentroid2D(), 10,10);
-        ofSetColor(255,0,0);
-        ofEllipse(tracker.getImageFeature(ofxFaceTracker::OUTER_MOUTH).getCentroid2D(), 10,10);
-        ofPopStyle();
-         */
+        ofPopMatrix();
+        
         ofDrawBitmapString(ofToString((int) ofGetFrameRate()), 10, 20);
         ofDrawBitmapString(ofToString(numFaces), 10, 35);
         ofDrawBitmapString(ofToString((int)ofGetElapsedTimeMillis()/1000), 10, 50);
+        ofDrawBitmapString(ofToString(totalEyeMouthRatio/numFaces), 10, 65);
+        
     } else {
         allFaces.draw(0, 0, ofGetWidth(), ofGetHeight());
+        ofDrawBitmapString(ofToString(numFaces), 30, 30);
     }
     
     if(classifier.getProbability(5) > 0.99 && !justDidExpression) {
@@ -251,36 +213,10 @@ void testApp::draw() {
     if(classifier.getProbability(5) < 0.9 && justDidExpression) {
         justDidExpression = false;
     }
-
-    
-    output.end();
-    
-    ofBackground(0);
-    ofSetBackgroundColor(0);
-    
-    ofPushMatrix();
-    
-    ofTranslate(WIDTH/2, HEIGHT/2);
-    //ofRotateX(-mouseX/5);
-    //ofLogNotice(ofToString(-mouseY/5));
-    ofRotateY(-mouseX/5);
-    
-    ofTranslate(-WIDTH/2, -HEIGHT/2);
-    
-    ofTranslate(100, 0, -100);
-    
-    output.draw(0,0);
-    
-    ofDrawBitmapString(ofToString(numFaces), 10, 35);
-    ofPopMatrix();
-    
-    ofDrawBitmapString(ofToString(numFaces), 10, 35);
-    //output.draw(0,0);
-    
 }
 
 void testApp::addCurrentFaceToAllFaces() {
-    //ofReadPixels(allFaces.getTexture(), myPixels);
+    totalEyeMouthRatio += mouthDist/eyeDist;
     
     timestampLastFaceSaved = ofGetElapsedTimeMillis();
     
@@ -289,7 +225,7 @@ void testApp::addCurrentFaceToAllFaces() {
     ofPixels allPixels;
     ofPixels currentPixels;
     
-    currentFace.readToPixels(currentPixels);
+    currentFaceWithMouthAligned.readToPixels(currentPixels);
     allFaces.readToPixels(allPixels);
     
     
@@ -315,11 +251,9 @@ void testApp::addCurrentFaceToAllFaces() {
     ot.draw(0,0);
     allFaces.end();
     
-    
-//    delete [] a;
-//    a = NULL;
-    
     ofPopMatrix();
+    
+    
 }
 
 void testApp::toggleDebugMode() {
@@ -353,5 +287,14 @@ void testApp::keyPressed(int key) {
     }
     if(key == 'l') {
         classifier.load("expressions");
+    }
+    
+    
+    if(key == 's') {
+        allFaces.begin();
+        ofImage temp;
+        temp.grabScreen(0, 0, WIDTH, HEIGHT);
+        temp.saveImage( "results/"+ ofToString(numFaces) + "faces_" + ofToString((int)ofGetElapsedTimef()/60) + "_min.jpg");
+        allFaces.end();
     }
 }

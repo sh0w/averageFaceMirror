@@ -47,8 +47,9 @@ public:
     
     ofFbo allFaces;
     ofFbo currentFace;
+    ofFbo currentFaceWithMouthAligned;
     
-    ofFbo output;
+    //ofFbo output;
     
     void addCurrentFaceToAllFaces();
     int numFaces;
@@ -62,4 +63,11 @@ public:
     unsigned long long timestampLastFaceSaved;
     
     bool justDidExpression;
+    
+    float totalEyeMouthRatio;
+    float scaleForEyeAlignment;
+    float eyeDist;
+    float mouthDist;
+    
+    ofTrueTypeFont font;
 };
