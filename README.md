@@ -9,14 +9,14 @@ computes the average of the faces it detects (from the webcam feed)
 
 ## to do:
 - right now it's anchored on the eyes -> add fixed mouth pos
-- make sure it can run for several hours...!
+- ~~make sure it can run for several hours...!~~
 - ~~add debug mode vs presentation mode~~
   - ~~display webcam feed~~
   - ~~display # of used images~~
   - display past images
 - ~~change to portrait mode instead of landscape~~
-- (maybe add keystone correction for projection..?)
-- (add minimum face size)
+- ~~(maybe add keystone correction for projection..?)~~
+- ~~add minimum face size~~
 - debugging + optimization.
 
 november 2015, at school for poetic computation. <3
