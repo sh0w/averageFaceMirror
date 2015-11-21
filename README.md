@@ -2,6 +2,8 @@
 
 computes the average of the faces it detects (from the webcam feed)
 
+![faces](average-face.jpg)
+
 - of 0.8.4
 - based on kyle mcdonald's [ofxFaceTracker](https://github.com/kylemcdonald/ofxFaceTracker)
 - you'll need to download ofxFaceTracker and put it in your openframeworks addons/ folder, and then copy this directory in your ofxFaceTracker/ directory.
