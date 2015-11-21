@@ -3,10 +3,12 @@
 using namespace ofxCv;
 
 void testApp::setup() {
+    ofBackground(0);
+    
     WIDTH = 1280;
     HEIGHT = 720;
     
-    usePS3 = false;
+    usePS3 = true;
     debugMode = false;
     rotateScreen = true;
     

@@ -48,6 +48,8 @@ public:
     ofFbo allFaces;
     ofFbo currentFace;
     
+    ofFbo output;
+    
     void addCurrentFaceToAllFaces();
     int numFaces;
     
