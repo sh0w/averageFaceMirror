@@ -8,7 +8,7 @@ computes the average of the faces it detects (from the webcam feed)
 
 
 ## to do:
-- right now it's anchored on the eyes -> add fixed mouth pos
+- ~~right now it's anchored on the eyes -> add fixed mouth pos~~
 - ~~make sure it can run for several hours...!~~
 - ~~add debug mode vs presentation mode~~
   - ~~display webcam feed~~
