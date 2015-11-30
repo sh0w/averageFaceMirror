@@ -8,7 +8,7 @@ void testApp::setup() {
     WIDTH = 1280;
     HEIGHT = 720;
     
-    usePS3 = true;
+    usePS3 = false;
     debugMode = false;
     rotateScreen = true;
     
@@ -78,11 +78,14 @@ void testApp::setupPS3Eye() {
 
 void testApp::update() {
     
+    if(numFaces > 0) {
+	    averageEyeMouthRatio = totalEyeMouthRatio/numFaces;
+    }
+    
     if(usePS3) {
         vidGrabber.update();
         
-        if (vidGrabber.isFrameNew())
-        {
+        if (vidGrabber.isFrameNew()) {
             videoTexture.loadData(vidGrabber.getPixelsRef());
             ofPixels pix = vidGrabber.getPixelsRef();
             pix.setImageType(OF_IMAGE_GRAYSCALE);
@@ -102,9 +105,6 @@ void testApp::update() {
 }
 
 void testApp::draw() {
-    //output.begin();
-    
-    
     ofPushMatrix();
     if(tracker.getFound()) {
         
@@ -157,13 +157,17 @@ void testApp::draw() {
         
         ofTranslate(WIDTH*0.67, HEIGHT/2);
         
-        ofScale(1.15/(mouthDist/eyeDist),1);
+        //TODO: if(rotateScreen) ...
+        
+        // scale face vertically for mouth alignment:
+        ofScale(averageEyeMouthRatio/(mouthDist/eyeDist),1);
+        
         currentFace.draw(-1.15*WIDTH*0.565,-HEIGHT/2);
         
         if(ofGetElapsedTimeMillis() > timestampLastFaceSaved + 1000) {
             ofImage temp;
             temp.grabScreen(0, 0, WIDTH, HEIGHT);
-            temp.saveImage( ofToString(numFaces % 1000) + ".jpg");
+            temp.saveImage( ofToString(numFaces) + ".jpg");
             addCurrentFaceToAllFaces();
         }
         
@@ -199,7 +203,7 @@ void testApp::draw() {
         ofDrawBitmapString(ofToString((int) ofGetFrameRate()), 10, 20);
         ofDrawBitmapString(ofToString(numFaces), 10, 35);
         ofDrawBitmapString(ofToString((int)ofGetElapsedTimeMillis()/1000), 10, 50);
-        ofDrawBitmapString(ofToString(totalEyeMouthRatio/numFaces), 10, 65);
+        ofDrawBitmapString(ofToString(averageEyeMouthRatio), 10, 65);
         
     } else {
         allFaces.draw(0, 0, ofGetWidth(), ofGetHeight());
@@ -231,7 +235,7 @@ void testApp::addCurrentFaceToAllFaces() {
     
     for (int i = numFaces-1; i < numFaces; i++) {
         ofImage temp;
-        temp.loadImage(ofToString(i%1000) + ".jpg");
+        temp.loadImage(ofToString(i) + ".jpg");
         
         unsigned char* tp = temp.getPixels();
         

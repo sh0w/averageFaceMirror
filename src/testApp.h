@@ -70,4 +70,6 @@ public:
     float mouthDist;
     
     ofTrueTypeFont font;
+    
+    float averageEyeMouthRatio;
 };
