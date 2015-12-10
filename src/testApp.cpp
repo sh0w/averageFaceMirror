@@ -117,12 +117,12 @@ void testApp::draw() {
         
         
         if(rotateScreen) {
-            ofTranslate(ofGetWidth() * 0.8, -ofGetHeight()/9);
+            ofTranslate(WIDTH* 0.8, -HEIGHT/9);
             ofRotate(90);
             ofScale(0.8,0.8);
         }
         
-        ofTranslate(ofGetWidth()/3, ofGetHeight()/3);
+        ofTranslate(WIDTH/3, HEIGHT/3);
         ofTranslate(-leftEyePos);
         
         ofPushMatrix();
