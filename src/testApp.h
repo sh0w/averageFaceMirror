@@ -38,7 +38,6 @@ public:
 	ofVideoGrabber cam;
     
 	ofxFaceTracker tracker;
-    ExpressionClassifier classifier;
     
     ofPoint leftEyePos;
     ofPoint rightEyePos;
@@ -48,8 +47,6 @@ public:
     ofFbo allFaces;
     ofFbo currentFace;
     ofFbo currentFaceWithMouthAligned;
-    
-    //ofFbo output;
     
     void addCurrentFaceToAllFaces();
     int numFaces;
