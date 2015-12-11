@@ -19,19 +19,12 @@ void testApp::setup() {
     }
     tracker.setup();
     tracker.setHaarMinSize(HEIGHT / 4);
-    classifier.classify(tracker);
     
     numFaces = 0;
     
     allFaces.allocate(WIDTH, HEIGHT, GL_RGB);
     currentFace.allocate(WIDTH, HEIGHT, GL_RGB);
     currentFaceWithMouthAligned.allocate(WIDTH, HEIGHT, GL_RGB);
-    
-    /*
-    allFaces.begin();
-    ofSetColor(0);
-    ofRect(0,0,ofGetWidth(), ofGetHeight());
-    allFaces.end();*/
     
     a = new unsigned long[WIDTH * HEIGHT * 3];
     totalEyeMouthRatio = 0;
@@ -90,7 +83,6 @@ void testApp::update() {
             ofPixels pix = vidGrabber.getPixelsRef();
             pix.setImageType(OF_IMAGE_GRAYSCALE);
             tracker.update(toCv(pix));
-            classifier.classify(tracker);
         }
         
     } else {
@@ -99,7 +91,6 @@ void testApp::update() {
         
         if(cam.isFrameNew()) {
             tracker.update(toCv(cam));
-            classifier.classify(tracker);
         }
     }
 }
@@ -117,7 +108,7 @@ void testApp::draw() {
         
         
         if(rotateScreen) {
-            ofTranslate(WIDTH* 0.8, -HEIGHT/9);
+            ofTranslate(WIDTH * 0.8, -HEIGHT/9);
             ofRotate(90);
             ofScale(0.8,0.8);
         }
@@ -129,7 +120,7 @@ void testApp::draw() {
         
         ofTranslate(leftEyePos);
         
-        // calculate angle between left and right eye
+        // calculate eye angle (for horizontal alignment)
         ofRotate(-asin((rightEyePos.y - leftEyePos.y)/
                        ofDist(leftEyePos.x, leftEyePos.y, rightEyePos.x,  rightEyePos.y)) * 180/PI);
         
@@ -137,7 +128,7 @@ void testApp::draw() {
         eyeDist = ofDist(leftEyePos.x, leftEyePos.y, rightEyePos.x,  rightEyePos.y);
         mouthDist = ofDist((leftEyePos.x + rightEyePos.x)/2, (leftEyePos.y + rightEyePos.y)/2, mouthPos.x, mouthPos.y);
         
-        // scale everything down to make left + right eye always at same distance
+        // scale everything down to make left + right eye always at same position
         ofScale(270 / ofDist(leftEyePos.x, leftEyePos.y, rightEyePos.x,  rightEyePos.y),
                 270 / ofDist(leftEyePos.x, leftEyePos.y, rightEyePos.x,  rightEyePos.y));
         
@@ -209,14 +200,6 @@ void testApp::draw() {
         allFaces.draw(0, 0, ofGetWidth(), ofGetHeight());
         ofDrawBitmapString(ofToString(numFaces), 30, 30);
     }
-    
-    if(classifier.getProbability(5) > 0.99 && !justDidExpression) {
-        toggleDebugMode();
-        justDidExpression = true;
-    }
-    if(classifier.getProbability(5) < 0.9 && justDidExpression) {
-        justDidExpression = false;
-    }
 }
 
 void testApp::addCurrentFaceToAllFaces() {
@@ -267,7 +250,6 @@ void testApp::toggleDebugMode() {
 void testApp::keyPressed(int key) {
     if(key == 'x') {
         tracker.reset();
-        classifier.reset();
     }
     if(key == ' ') {
         toggleDebugMode();
@@ -277,20 +259,6 @@ void testApp::keyPressed(int key) {
     }
     if(key == 'r') {
         rotateScreen = !rotateScreen;
-    }
-    
-    
-    if(key == 'e') {
-        classifier.addExpression();
-    }
-    if(key == 'a') {
-        classifier.addSample(tracker);
-    }
-    if(key == 's') {
-        classifier.save("expressions");
-    }
-    if(key == 'l') {
-        classifier.load("expressions");
     }
     
     
